@@ -14,6 +14,7 @@
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only src/schema",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "type-check": "tsc --pretty --noEmit",
     "format": "run-p format:* -l",
     "format:js": "prettier --write .",
     "format:prisma": "prisma format",
@@ -23,7 +24,7 @@
   "dependencies": {
     "@nexus/schema": "^0.15.0",
     "apollo-server": "^2.18.1",
-    "graphql": "^15.3.0",
+    "graphql": "14.6.0",
     "nexus-plugin-prisma": "^0.19.0"
   },
   "devDependencies": {
