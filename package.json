@@ -13,7 +13,12 @@
     "generate": "run-s generate:* -l",
     "generate:prisma": "prisma generate",
     "generate:nexus": "ts-node --transpile-only src/schema",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "format": "run-p format:* -l",
+    "format:js": "prettier --write .",
+    "format:prisma": "prisma format",
+    "lint:js": "eslint . --ext ts --ext tsx --ext js",
+    "lint:js:fix": "yarn lint:js --fix"
   },
   "dependencies": {
     "@nexus/schema": "^0.15.0",
@@ -23,9 +28,19 @@
   },
   "devDependencies": {
     "@types/node": "^14.11.2",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.0",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.2",
     "ts-node": "^9.0.0",
     "ts-node-dev": "^1.0.0-pre.63",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.3",
+    "typescript-eslint-language-service": "^4.0.1"
   }
 }

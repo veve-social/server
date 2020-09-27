@@ -1,14 +1,14 @@
-import { nexusSchemaPrisma } from "nexus-plugin-prisma/schema";
-import { intArg, makeSchema, objectType, stringArg } from '@nexus/schema'
+import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema';
+import { makeSchema, objectType } from '@nexus/schema';
 
 const Post = objectType({
   name: 'Post',
   definition(t) {
-    t.model.id()
-    t.model.title()
-    t.model.content()
+    t.model.id();
+    t.model.title();
+    t.model.content();
   },
-})
+});
 
 const Query = objectType({
   name: 'Query',
@@ -16,14 +16,14 @@ const Query = objectType({
     t.crud.post();
     t.crud.posts();
   },
-})
+});
 
 const Mutation = objectType({
   name: 'Mutation',
   definition(t) {
     t.crud.createOnePost();
   },
-})
+});
 
 export const schema = makeSchema({
   types: [Query, Mutation, Post],
@@ -45,4 +45,4 @@ export const schema = makeSchema({
       },
     ],
   },
-})
+});

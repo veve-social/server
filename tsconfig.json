@@ -4,7 +4,12 @@
     "rootDir": "src",
     "lib": ["esnext"],
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "plugins": [
+      {
+        "name": "typescript-eslint-language-service"
+      }
+    ]
   },
   "include": ["src/**/*"]
 }

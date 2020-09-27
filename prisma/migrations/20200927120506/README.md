@@ -37,5 +37,3 @@ migration ..20200927120506
 +  title     String
 +}
 ```
-
-
