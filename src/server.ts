@@ -5,6 +5,7 @@ import session from 'express-session';
 import connectRedis from 'connect-redis';
 import jwt from 'jsonwebtoken';
 import expressJWT from 'express-jwt';
+import cors from 'cors';
 
 import { schema } from './schema';
 import { createContext, prisma } from './context';
@@ -25,6 +26,13 @@ const invalidToken = {
 };
 
 app.set('trust proxy', 1);
+
+app.use(
+  cors({
+    origin: ['http://localhost:3000'],
+    credentials: true,
+  })
+);
 
 app.use(
   session({
@@ -100,7 +108,7 @@ app.get('/refersh-token', async (req, res) => {
 
 const server = new ApolloServer({ schema, context: createContext });
 
-server.applyMiddleware({ app, path: '/graphql' });
+server.applyMiddleware({ app, path: '/graphql', cors: false });
 
 app.listen({ port: 4000 }, () => {
   console.log(`🚀 Server ready at: http://localhost:4000 ⭐️ `);
