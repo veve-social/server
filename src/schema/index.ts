@@ -6,8 +6,7 @@ import { SignupMutation, LoginMutation } from './auth';
 
 const Query = queryType({
   definition(t) {
-    t.boolean('status', (_root, _args, ctx) => {
-      console.log('USER: ', ctx.req.user);
+    t.boolean('status', () => {
       return true;
     });
   },

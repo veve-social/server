@@ -25,7 +25,7 @@ migration 20200928135144..20200928141757
  generator client {
    provider      = "prisma-client-js"
 @@ -14,10 +14,4 @@
-   password  String  
+   password  String
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
  }
@@ -36,5 +36,3 @@ migration 20200928135144..20200928141757
 -  title   String
 -}
 ```
-
-

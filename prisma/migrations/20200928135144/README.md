@@ -6,7 +6,7 @@ You can check out the [state of the schema](./schema.prisma) after the migration
 ## Database Steps
 
 ```sql
-ALTER TABLE "public"."User" ADD COLUMN "password" text   NOT NULL 
+ALTER TABLE "public"."User" ADD COLUMN "password" text   NOT NULL
 ```
 
 ## Changes
@@ -28,10 +28,8 @@ migration 20200928125920..20200928135144
  model User {
    id        Int      @default(autoincrement()) @id
    email     String   @unique
-+  password  String  
++  password  String
    createdAt DateTime @default(now())
    updatedAt DateTime @updatedAt
  }
 ```
-
-
