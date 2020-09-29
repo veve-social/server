@@ -5,6 +5,7 @@
     "lib": ["esnext"],
     "esModuleInterop": true,
     "strict": true,
+    "baseUrl": ".",
     "plugins": [
       {
         "name": "typescript-eslint-language-service"

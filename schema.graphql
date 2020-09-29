@@ -2,26 +2,22 @@
 ### Do not make changes to this file directly
 
 
+input AuthInput {
+  email: String!
+  passowrd: String!
+}
+
+type LoginResponse {
+  jwtToken: String!
+}
+
 type Mutation {
-  createOnePost(data: PostCreateInput!): Post!
-}
+  login(data: AuthInput!): LoginResponse!
 
-type Post {
-  content: String
-  id: Int!
-  title: String!
-}
-
-input PostCreateInput {
-  content: String
-  title: String!
-}
-
-input PostWhereUniqueInput {
-  id: Int
+  """register new user"""
+  signup(data: AuthInput!): String!
 }
 
 type Query {
-  post(where: PostWhereUniqueInput!): Post
-  posts(after: PostWhereUniqueInput, before: PostWhereUniqueInput, first: Int, last: Int): [Post!]!
+  status: Boolean!
 }
