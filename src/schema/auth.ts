@@ -7,7 +7,7 @@ import {
 } from '@nexus/schema';
 import bcrypt from 'bcrypt';
 
-import { sendRefreshToken, createJwtToken } from 'utils/jwtToken';
+import { sendRefreshToken, createJwtToken } from '../utils/jwtToken';
 import { User } from './user';
 
 const AuthInput = inputObjectType({

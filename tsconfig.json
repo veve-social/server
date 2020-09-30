@@ -5,7 +5,8 @@
     "lib": ["esnext"],
     "esModuleInterop": true,
     "strict": true,
-    "baseUrl": "src/"
+    "baseUrl": "./"
   },
-  "include": ["src/**/*"]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

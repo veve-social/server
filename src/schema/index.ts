@@ -1,7 +1,7 @@
 import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema';
 import { makeSchema, queryType } from '@nexus/schema';
 
-import { paths } from 'config/paths';
+import { paths } from '../config/paths';
 import {
   SignupMutation,
   LoginMutation,
