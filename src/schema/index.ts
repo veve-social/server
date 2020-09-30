@@ -1,8 +1,15 @@
 import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema';
 import { makeSchema, queryType } from '@nexus/schema';
 
-import { paths } from '../config/paths';
-import { SignupMutation, LoginMutation } from './auth';
+import { paths } from 'config/paths';
+import {
+  SignupMutation,
+  LoginMutation,
+  MeQuery,
+  MeResponse,
+  SimpleError,
+} from './auth';
+import { User } from './user';
 
 const Query = queryType({
   definition(t) {
@@ -13,7 +20,15 @@ const Query = queryType({
 });
 
 export const schema = makeSchema({
-  types: [Query, SignupMutation, LoginMutation],
+  types: [
+    Query,
+    SignupMutation,
+    LoginMutation,
+    User,
+    MeQuery,
+    SimpleError,
+    MeResponse,
+  ],
   plugins: [nexusSchemaPrisma({ experimentalCRUD: true })],
   outputs: {
     schema: paths.schema,

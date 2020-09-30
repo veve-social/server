@@ -4,7 +4,6 @@ import Redis from 'ioredis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import jwt from 'jsonwebtoken';
-import expressJWT from 'express-jwt';
 import cors from 'cors';
 
 import { schema } from './schema';
@@ -18,6 +17,11 @@ const app = express();
 
 const RedisStore = connectRedis(session);
 const redis = new Redis('127.0.0.1:6379');
+
+const redisStore = new RedisStore({
+  client: redis,
+  disableTouch: true,
+});
 
 const invalidToken = {
   error: {
@@ -37,10 +41,7 @@ app.use(
 app.use(
   session({
     name: 'qid',
-    store: new RedisStore({
-      client: redis,
-      disableTouch: true,
-    }),
+    store: redisStore,
     cookie: {
       maxAge: constants.REFRESH_TOKEN_EXPIRE,
       httpOnly: true,
@@ -54,15 +55,33 @@ app.use(
   })
 );
 
-app.use(
-  expressJWT({
-    secret: constants.JWT_SECRET,
-    algorithms: ['HS256'],
-    credentialsRequired: false,
-  })
-);
+app.use((req, _res, next) => {
+  const { authorization } = req.headers;
 
-app.get('/refersh-token', async (req, res) => {
+  if (!authorization) {
+    return next();
+  }
+
+  const [prefix, token] = authorization.split('Bearer ');
+
+  if (prefix.length !== 0) {
+    return next();
+  }
+
+  let decoded: string;
+
+  try {
+    decoded = jwt.verify(token, constants.JWT_SECRET) as string;
+  } catch (error) {
+    return next();
+  }
+
+  req.user = decoded;
+
+  return next();
+});
+
+app.post('/refersh-token', async (req, res) => {
   try {
     const refreshToken = req.session?.refreshToken;
 

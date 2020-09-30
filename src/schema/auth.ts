@@ -1,7 +1,14 @@
-import { mutationField, inputObjectType, arg, objectType } from '@nexus/schema';
+import {
+  mutationField,
+  inputObjectType,
+  arg,
+  objectType,
+  queryField,
+} from '@nexus/schema';
 import bcrypt from 'bcrypt';
 
-import { sendRefreshToken, createJwtToken } from '../utils/jwtToken';
+import { sendRefreshToken, createJwtToken } from 'utils/jwtToken';
+import { User } from './user';
 
 const AuthInput = inputObjectType({
   name: 'AuthInput',
@@ -83,5 +90,48 @@ export const LoginMutation = mutationField('login', {
       console.log(error);
       throw error;
     }
+  },
+});
+
+export const SimpleError = objectType({
+  name: 'SimpleError',
+  definition(t) {
+    t.string('message');
+  },
+});
+
+export const MeResponse = objectType({
+  name: 'MeResponse',
+  definition(t) {
+    t.field('user', { type: User, nullable: true });
+    t.field('error', { type: SimpleError, nullable: true });
+  },
+});
+
+export const MeQuery = queryField('me', {
+  type: MeResponse,
+
+  async resolve(_root, _args, { prisma, req }) {
+    const userId = req.user?.uid;
+
+    if (!userId) {
+      return {
+        error: {
+          message: 'unauthorized',
+        },
+      };
+    }
+
+    const user = await prisma.user.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return {
+        error: {
+          message: 'unauthorized',
+        },
+      };
+    }
+
+    return { user };
   },
 });

@@ -7,8 +7,15 @@ input AuthInput {
   passowrd: String!
 }
 
+scalar DateTime
+
 type LoginResponse {
   jwtToken: String!
+}
+
+type MeResponse {
+  error: SimpleError
+  user: User
 }
 
 type Mutation {
@@ -19,5 +26,17 @@ type Mutation {
 }
 
 type Query {
+  me: MeResponse!
   status: Boolean!
+}
+
+type SimpleError {
+  message: String!
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  id: Int!
+  updatedAt: DateTime!
 }

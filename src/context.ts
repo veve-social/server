@@ -3,6 +3,16 @@ import { PrismaClient } from '@prisma/client';
 
 export const prisma = new PrismaClient();
 
+interface User {
+  uid: number;
+}
+
+declare module 'express' {
+  interface Request {
+    user?: User;
+  }
+}
+
 export interface Context {
   prisma: PrismaClient;
   req: Request;

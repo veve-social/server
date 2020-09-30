@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { constants } from '../config/constants';
+import { constants } from 'config/constants';
 
 type Data = {
   [key: string]: string | number;
