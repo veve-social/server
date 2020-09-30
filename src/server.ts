@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import cors from 'cors';
 
 import { schema } from './schema';
+import type { DecodedUser } from './types';
 import { createContext, prisma } from './context';
 import { sendRefreshToken, createJwtToken } from './utils/jwtToken';
 import { constants } from './config/constants';
@@ -68,10 +69,10 @@ app.use((req, _res, next) => {
     return next();
   }
 
-  let decoded: string;
+  let decoded: DecodedUser | null;
 
   try {
-    decoded = jwt.verify(token, constants.JWT_SECRET) as string;
+    decoded = jwt.verify(token, constants.JWT_SECRET) as DecodedUser;
   } catch (error) {
     return next();
   }
