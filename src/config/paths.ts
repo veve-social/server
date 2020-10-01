@@ -9,4 +9,5 @@ const resolveApp = (relativePath: string): string =>
 export const paths = {
   nexus: resolveApp('src/generated/nexus.ts'),
   schema: resolveApp('schema.graphql'),
+  emails: resolveApp('src/email-templates'),
 };

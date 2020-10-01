@@ -11,6 +11,7 @@ import { sendRefreshToken, createJwtToken } from '../utils/jwtToken';
 import { sendEmail } from '../utils/mail';
 import { User } from './user';
 import { constants } from '../config/constants';
+import { mjmlParser } from '../utils/mjmlParser';
 
 const VerifyResponse = objectType({
   name: 'LoginResponse',
@@ -39,8 +40,16 @@ export const LoginMutation = mutationField('login', {
         1000 * 60 * 15 // the token is expired after 15 min
       );
 
-      const html = `<a href="http://localhost:3000/login/verify/${token}"> verify login </a>`;
-      await sendEmail({ to: email, html });
+      const html = await mjmlParser('activation', {
+        verifyUrl: `http://localhost:3000/login/verify/${token}`,
+      });
+
+      await sendEmail({
+        to: email,
+        html,
+        from: '"veve-social" <no-reply@veve.social>',
+        subject: 'Sign in to veve-social ✨',
+      });
 
       return true;
     } catch (error) {

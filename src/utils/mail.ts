@@ -6,9 +6,16 @@ interface SendEmail {
   to: string;
   // text: string;
   html: string;
+  from: string;
+  subject: string;
 }
 
-export const sendEmail = async ({ to, html }: SendEmail): Promise<void> => {
+export const sendEmail = async ({
+  to,
+  html,
+  from,
+  subject,
+}: SendEmail): Promise<void> => {
   const transporter = nodemailer.createTransport({
     host: constants.STMP_HOST,
     port: Number(constants.STMP_PORT),
@@ -20,9 +27,9 @@ export const sendEmail = async ({ to, html }: SendEmail): Promise<void> => {
   });
 
   const info = await transporter.sendMail({
-    from: '"Fred Foo 👻" <foo@example.com>',
+    from,
     to,
-    subject: 'Sign in ✔',
+    subject,
     html,
   });
 
