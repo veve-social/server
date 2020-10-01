@@ -10,6 +10,7 @@ export const createServer = (): Promise<Express> => {
   return new Promise((resolve) => {
     const app = express();
 
+    // recomended by express-session middleware
     app.set('trust proxy', 1);
 
     middlewares(app);
