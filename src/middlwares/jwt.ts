@@ -9,27 +9,20 @@ export const jwtMiddleware = (
   _res: Response,
   next: NextFunction
 ): void => {
-  const { authorization } = req.headers;
-
-  if (!authorization) {
-    return next();
-  }
-
-  const [prefix, token] = authorization.split('Bearer ');
-
-  if (prefix.length !== 0) {
-    return next();
-  }
-
-  let decoded: DecodedUser | null;
-
   try {
-    decoded = jwt.verify(token, constants.JWT_SECRET) as DecodedUser;
+    const { authorization } = req.headers;
+
+    if (authorization) {
+      const [, token] = authorization
+        .match(/^Bearer /)
+        ?.['input']?.split('Bearer ') as string[];
+
+      const decoded = jwt.verify(token, constants.JWT_SECRET) as DecodedUser;
+      req.user = decoded;
+    }
   } catch (error) {
+    // do nothing
+  } finally {
     return next();
   }
-
-  req.user = decoded;
-
-  return next();
 };
