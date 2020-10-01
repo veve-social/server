@@ -8,11 +8,6 @@ type LoginResponse {
   jwtToken: String!
 }
 
-type MeResponse {
-  error: SimpleError
-  user: User
-}
-
 type Mutation {
   """register new user"""
   login(email: String!): Boolean!
@@ -20,12 +15,8 @@ type Mutation {
 }
 
 type Query {
-  me: MeResponse!
+  me: User!
   status: Boolean!
-}
-
-type SimpleError {
-  message: String!
 }
 
 type User {

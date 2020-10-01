@@ -4,7 +4,7 @@ import {
   queryField,
   stringArg,
 } from '@nexus/schema';
-import { ApolloError } from 'apollo-server-express';
+import { ApolloError, AuthenticationError } from 'apollo-server-express';
 import { v4 as uuidv4 } from 'uuid';
 
 import { sendRefreshToken, createJwtToken } from '../utils/jwtToken';
@@ -95,45 +95,22 @@ export const VerifyMutation = mutationField('verify', {
   },
 });
 
-export const SimpleError = objectType({
-  name: 'SimpleError',
-  definition(t) {
-    t.string('message');
-  },
-});
-
-export const MeResponse = objectType({
-  name: 'MeResponse',
-  definition(t) {
-    t.field('user', { type: User, nullable: true });
-    t.field('error', { type: SimpleError, nullable: true });
-  },
-});
-
 export const MeQuery = queryField('me', {
-  type: MeResponse,
+  type: User,
 
   async resolve(_root, _args, { prisma, req }) {
     const userId = req.user?.uid;
 
     if (!userId) {
-      return {
-        error: {
-          message: 'unauthorized',
-        },
-      };
+      throw new AuthenticationError('must authenticate');
     }
 
     const user = await prisma.user.findOne({ where: { id: userId } });
 
     if (!user) {
-      return {
-        error: {
-          message: 'unauthorized',
-        },
-      };
+      throw new AuthenticationError('must authenticate');
     }
 
-    return { user };
+    return user;
   },
 });

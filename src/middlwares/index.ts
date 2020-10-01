@@ -4,6 +4,7 @@ import helmet from 'helmet';
 
 import { sessionMiddleware } from './session';
 import { jwtMiddleware } from './jwt';
+import { constants } from '../config/constants';
 
 export const middlewares = (app: Express): void => {
   app.use(
@@ -13,7 +14,9 @@ export const middlewares = (app: Express): void => {
     })
   );
 
-  app.use(helmet());
+  if (constants.isProd) {
+    app.use(helmet());
+  }
 
   app.use(sessionMiddleware);
 
