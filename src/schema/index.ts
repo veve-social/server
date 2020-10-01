@@ -3,7 +3,7 @@ import { makeSchema, queryType } from '@nexus/schema';
 
 import { paths } from '../config/paths';
 import {
-  SignupMutation,
+  VerifyMutation,
   LoginMutation,
   MeQuery,
   MeResponse,
@@ -22,7 +22,7 @@ const Query = queryType({
 export const schema = makeSchema({
   types: [
     Query,
-    SignupMutation,
+    VerifyMutation,
     LoginMutation,
     User,
     MeQuery,

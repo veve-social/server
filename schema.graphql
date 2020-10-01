@@ -2,11 +2,6 @@
 ### Do not make changes to this file directly
 
 
-input AuthInput {
-  email: String!
-  passowrd: String!
-}
-
 scalar DateTime
 
 type LoginResponse {
@@ -19,10 +14,9 @@ type MeResponse {
 }
 
 type Mutation {
-  login(data: AuthInput!): LoginResponse!
-
   """register new user"""
-  signup(data: AuthInput!): String!
+  login(email: String!): Boolean!
+  verify(token: String!): LoginResponse!
 }
 
 type Query {

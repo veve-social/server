@@ -1,93 +1,86 @@
 import {
   mutationField,
-  inputObjectType,
-  arg,
   objectType,
   queryField,
+  stringArg,
 } from '@nexus/schema';
-import bcrypt from 'bcrypt';
+import { ApolloError } from 'apollo-server-express';
+import { v4 as uuidv4 } from 'uuid';
 
 import { sendRefreshToken, createJwtToken } from '../utils/jwtToken';
+import { sendEmail } from '../utils/mail';
 import { User } from './user';
+import { constants } from '../config/constants';
 
-const AuthInput = inputObjectType({
-  name: 'AuthInput',
-  definition(t) {
-    t.string('email', { required: true });
-    t.string('passowrd', { required: true });
-  },
-});
-
-const LoginResponse = objectType({
+const VerifyResponse = objectType({
   name: 'LoginResponse',
   definition(t) {
     t.string('jwtToken', { nullable: false });
   },
 });
 
-export const SignupMutation = mutationField('signup', {
-  type: 'String',
+export const LoginMutation = mutationField('login', {
+  type: 'Boolean',
 
   description: 'register new user',
 
   args: {
-    data: arg({
-      type: AuthInput,
-      required: true,
-    }),
+    email: stringArg({ required: true }),
   },
 
-  async resolve(_root, { data }, ctx) {
-    const hashedPassword = await bcrypt.hash(data.passowrd, 10);
+  async resolve(_root, { email }, { redis }) {
+    try {
+      const token = uuidv4();
 
-    await ctx.prisma.user.create({
-      data: {
-        email: data.email,
-        password: hashedPassword,
-      },
-    });
+      await redis.set(
+        constants.REGISTER_LOGIN_PREFIX + token,
+        email,
+        'PX',
+        1000 * 60 * 15 // the token is expired after 15 min
+      );
 
-    return 'done';
+      const html = `<a href="http://localhost:3000/login/verify/${token}"> verify login </a>`;
+      await sendEmail({ to: email, html });
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
   },
 });
 
-export const LoginMutation = mutationField('login', {
-  type: LoginResponse,
+export const VerifyMutation = mutationField('verify', {
+  type: VerifyResponse,
 
   args: {
-    data: arg({
-      type: AuthInput,
-      required: true,
-    }),
+    token: stringArg({ required: true }),
   },
 
-  async resolve(_root, { data }, ctx) {
+  async resolve(_root, { token }, { prisma, redis, req }) {
     try {
-      const user = await ctx.prisma.user.findOne({
-        where: {
-          email: data.email,
-        },
+      const key = constants.REGISTER_LOGIN_PREFIX + token;
+      const email = await redis.get(key);
+
+      if (!email) {
+        throw new ApolloError('Invalid Token!');
+      }
+
+      const user = await prisma.user.upsert({
+        where: { email },
+        create: { email },
+        update: { email },
       });
-
-      if (!user) {
-        throw new Error('invalid email');
-      }
-
-      const match = await bcrypt.compare(data.passowrd, user.password);
-
-      if (!match) {
-        throw new Error('bad password!');
-      }
 
       const jwtToken = createJwtToken({ uid: user.id });
 
-      sendRefreshToken({ uid: user.id }, ctx.req);
+      sendRefreshToken({ uid: user.id }, req);
+
+      await redis.del(key);
 
       return {
         jwtToken,
       };
     } catch (error) {
-      console.log(error);
       throw error;
     }
   },
