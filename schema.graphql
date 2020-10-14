@@ -10,13 +10,13 @@ type LoginResponse {
 
 type Mutation {
   """register new user"""
-  login(email: String!): Boolean!
-  verify(token: String!): LoginResponse!
+  login(email: String!): Boolean
+  verify(token: String!): LoginResponse
 }
 
 type Query {
-  me: User!
-  status: Boolean!
+  me: User
+  status: Boolean
 }
 
 type User {
